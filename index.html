@@ -3,12 +3,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Grashalm03</title>
+<title>Grashalm03 · Coming Soon</title>
+<meta name="description" content="Grashalm03 – coming soon.">
+<meta name="theme-color" content="#050508">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main class="card">
-  <h1>Grashalm03</h1>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+<div class="orb o3"></div>
+<div class="grid"></div>
+<div class="scan"></div>
+<div class="vignette"></div>
+<div class="cursor" id="cursor"></div>
+
+<main class="stage" id="stage">
+  <p class="tag"><span class="dot"></span>STATUS: IN ENTWICKLUNG</p>
+
+  <h1 class="glitch" data-text="COMING SOON">COMING SOON</h1>
+
+  <p class="name">
+    <span class="bracket">[</span>
+    <span id="typed"></span><span class="caret">_</span>
+    <span class="bracket">]</span>
+  </p>
+
+  <div class="bar" role="progressbar" aria-label="Fortschritt">
+    <div class="fill" id="fill"></div>
+  </div>
+  <p class="pct"><span id="pct">0</span>%</p>
 </main>
+
+<script src="script.js"></script>
 </body>
 </html>
