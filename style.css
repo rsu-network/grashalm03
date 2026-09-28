@@ -309,10 +309,6 @@ body.nogl #sky { background: linear-gradient(180deg, #4f9bec, #dcecff); }
 .lt { margin-left: auto; font-size: 1.15rem; font-weight: 700; letter-spacing: .04em; font-variant-numeric: tabular-nums; }
 @media (max-width: 820px) { .local { display: none; } }
 
-/* ---------- Spruch ---------- */
-.joke { margin: .9rem 0 0; max-width: 34rem; font-size: .8rem; line-height: 1.5; color: var(--ink-soft); }
-.joke s { text-decoration-thickness: 2px; text-decoration-color: #e0413a; color: var(--ink); font-weight: 700; }
-@media (max-width: 820px) { .joke { display: none; } }
 
 /* Abzeichen mit sichtbarem Namen */
 .badges.lg { flex-wrap: wrap; }
@@ -332,4 +328,8 @@ body.nogl #sky { background: linear-gradient(180deg, #4f9bec, #dcecff); }
   .presence, .local { margin-top: .5rem; }
   .foot { margin-top: 1rem; }
 }
-@media (min-width: 821px) and (max-height: 700px) { .joke { display: none; } }
+
+/* ---------- Spruch unten ---------- */
+.joke { position: fixed; left: 52%; right: 6vw; bottom: 4vh; margin: 0; font-size: .82rem; letter-spacing: .04em; color: var(--ink-soft); pointer-events: none; }
+.joke b { color: #d8352e; font-weight: 800; }
+@media (max-width: 820px) { .joke { left: 0; right: 0; bottom: 1.2svh; text-align: center; font-size: .7rem; } }
