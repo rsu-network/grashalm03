@@ -20,12 +20,7 @@
     const w = document.createElement('span'); w.className = 'ch'; w.setAttribute('aria-hidden', 'true'); w.style.setProperty('--i', i);
     if (m && i >= m[1].length) w.classList.add('acc');
     const s = document.createElement('span'); s.className = 'sw'; s.textContent = ch; w.appendChild(s); title.appendChild(w);
-    letters.push({ w, s, i, ch });
-    if (!reduce) {   // Buchstaben "entschlüsseln" sich
-      const pool = 'abcdefghijklmnopqrstuvwxyz0123456789#%&*+';
-      setTimeout(() => { const end = performance.now() + 520;
-        const id = setInterval(() => { if (performance.now() > end) { s.textContent = ch; clearInterval(id); } else s.textContent = pool[(Math.random() * pool.length) | 0]; }, 45); }, 250 + i * 65 + 1500);
-    }
+    letters.push({ w, s, i });
   });
 
   const ICONS = {
@@ -60,36 +55,27 @@
     li.appendChild(a); $('links').appendChild(li);
   });
 
-  // ---------- Typewriter ----------
-  (function () {
-    const el = $('bio'), lines = P.bio.length ? P.bio : [''];
-    let li = 0, ci = 0, del = false;
-    (function tick() {
-      const s = lines[li];
-      el.textContent = s.slice(0, ci);
-      let t = del ? 35 : 80;
-      if (!del && ci === s.length) { if (lines.length === 1) return; del = true; t = 1800; }
-      else if (del && ci === 0) { del = false; li = (li + 1) % lines.length; t = 300; }
-      else ci += del ? -1 : 1;
-      setTimeout(tick, t);
-    })();
-  })();
-
-  // ---------- Buchstaben biegen sich im Wind wie Halme ----------
+  // ---------- Name: Dock-Vergrößerung am Cursor + wandernde Lichtwelle ----------
   let tt = 0;
+  const widths = [];
   function sway() {
     tt += .016;
     const active = performance.now() - M.last < 2600;
-    for (const L of letters) {
-      const r = L.w.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height;
-      let rot = Math.sin(tt * 1.5 + L.i * .55) * 1.6, lift = Math.sin(tt * 1.1 + L.i * .8) * 1.5, sc = 1;
-      if (active) {
-        const dx = cx - M.x, dy = cy - M.y, near = Math.exp(-(dx * dx + dy * dy) / (2 * 150 * 150));
-        rot += Math.sign(dx || 1) * Math.min(1, Math.abs(dx) / 50) * near * 15;
-        lift -= near * 10; sc += near * .06;
-      }
-      L.s.style.transform = `translateY(${lift.toFixed(2)}px) rotate(${rot.toFixed(2)}deg) scaleY(${sc.toFixed(3)})`;
-    }
+    const tr = title.getBoundingClientRect();
+    const my = M.y, inBand = active && my > tr.top - 90 && my < tr.bottom + 90;
+    if (!widths.length) letters.forEach(L => widths.push(L.w.offsetWidth));
+    const sc = letters.map(L => {
+      if (!inBand) return 1;
+      const r = L.w.getBoundingClientRect(), cx = r.left + r.width / 2, d = cx - M.x;
+      return 1 + .62 * Math.exp(-(d * d) / (2 * 85 * 85));
+    });
+    let acc = 0;
+    letters.forEach((L, i) => {
+      const s = sc[i], x = acc + (s - 1) * widths[i] / 2; acc += (s - 1) * widths[i];
+      const glow = Math.pow(Math.max(0, Math.sin(tt * 1.3 - i * .55)), 8);
+      L.s.style.transform = `translateX(${x.toFixed(1)}px) translateY(${(-glow * 3).toFixed(1)}px) scale(${s.toFixed(3)})`;
+      L.s.style.color = glow > .05 || s > 1.05 ? `color-mix(in srgb, var(--accent) ${Math.round(Math.max(glow, (s - 1) * 1.4) * 100)}%, currentColor)` : '';
+    });
     if (!reduce) requestAnimationFrame(sway);
   }
 

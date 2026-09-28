@@ -122,13 +122,13 @@ body.nogl #sky { background: linear-gradient(180deg, #4f9bec, #dcecff); }
 /* ---------- Inhalt rechts ---------- */
 .panel { position: absolute; top: 48%; left: 52%; right: 6vw; max-width: 600px; transform: translateY(-50%); pointer-events: auto; }
 .title {
-  margin: 0 0 1.1rem; font-size: clamp(2.6rem, 6.6vw, 5.8rem); font-weight: 800; letter-spacing: -.035em; line-height: .95;
+  margin: 0 0 1.6rem; font-size: clamp(2.6rem, 6.6vw, 5.8rem); font-weight: 800; letter-spacing: -.035em; line-height: .95;
   text-transform: lowercase; white-space: nowrap; color: var(--ink);
 }
-.ch { display: inline-block; opacity: 0; animation: sprout 1.1s cubic-bezier(.16, 1, .3, 1) forwards; animation-delay: calc(var(--i) * 65ms + 250ms); }
+.ch { display: inline-block; opacity: 0; animation: drop 1.2s cubic-bezier(.34, 1.56, .64, 1) forwards; animation-delay: calc(var(--i) * 70ms + 250ms); }
 .ch.acc { color: var(--accent); }
 .sw { display: inline-block; transform-origin: 50% 100%; will-change: transform; }
-@keyframes sprout { from { opacity: 0; transform: translateY(.5em) scaleY(.15); filter: blur(10px); } to { opacity: 1; transform: none; filter: blur(0); } }
+@keyframes drop { from { opacity: 0; transform: translateY(-1.3em) rotate(-22deg) scale(.55); filter: blur(8px); } 60% { filter: blur(0); } to { opacity: 1; transform: none; filter: blur(0); } }
 
 .bio { margin: 0 0 2rem; min-height: 1.6em; color: var(--ink-soft); font-size: 1.15rem; font-weight: 500; opacity: 0; animation: fadeup .9s .9s cubic-bezier(.16,1,.3,1) forwards; }
 .caret { animation: blink .9s steps(1) infinite; color: var(--accent); }
@@ -211,23 +211,23 @@ body.nogl #sky { background: linear-gradient(180deg, #4f9bec, #dcecff); }
 .front .barcode { width: calc(100% - 12cqw); }
 
 .mag { height: 13cqw; margin: 1cqw -7cqw 4cqw; background: linear-gradient(180deg, #0a1f3a, #163a66 45%, #0a1f3a); box-shadow: inset 0 .5cqw 0 rgba(255,255,255,.18), 0 .8cqw 1.4cqw rgba(6,42,82,.3); }
-.bk-title { margin: 3.5cqw 0 2cqw; font-size: 3cqw; letter-spacing: .3em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft); }
-.bk-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.6cqw; font-size: 4cqw; font-weight: 600; }
+.bk-title { margin: 5cqw 0 2.6cqw; font-size: 3.2cqw; letter-spacing: .3em; text-transform: uppercase; font-weight: 700; color: var(--ink-soft); }
+.bk-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2.4cqw; font-size: 4.8cqw; font-weight: 600; }
 .bk-list li::before { content: ""; display: inline-block; width: 2.2cqw; height: .6cqw; background: var(--accent); margin-right: 2.4cqw; vertical-align: middle; }
-.bk-foot { margin: auto 0 0; font-size: 2.9cqw; letter-spacing: .08em; color: var(--ink-soft); line-height: 1.5; }
+.bk-foot { margin: auto 0 0; font-size: 3.2cqw; letter-spacing: .08em; color: var(--ink-soft); line-height: 1.5; }
 .bk-foot b { color: var(--ink); letter-spacing: .12em; }
 
 .pres { display: flex; align-items: center; gap: 3cqw; min-width: 0; }
-.pav { position: relative; width: 12cqw; height: 12cqw; flex: none; border-radius: 1.8cqw; background: rgba(6,42,82,.15); }
+.pav { position: relative; width: 15cqw; height: 15cqw; flex: none; border-radius: 1.8cqw; background: rgba(6,42,82,.15); }
 .pav img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; display: block; }
 .pav img:not([src]) { visibility: hidden; }
 .pav .sd { position: absolute; right: -1cqw; bottom: -1cqw; width: 3.6cqw; height: 3.6cqw; box-shadow: 0 0 0 .8cqw #eaf3ff; }
 .ptx { display: grid; min-width: 0; }
-.pn { font-size: 4cqw; }
-.pt { font-size: 3.2cqw; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pn { font-size: 4.8cqw; }
+.pt { font-size: 3.6cqw; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* Discord-Karte im Inhalt (rechts) */
-.presence { margin: 0 0 1rem; font-size: 1rem; }
+.presence { margin: 1rem 0 0; font-size: 1rem; }
 .presence .pres { container-type: normal; gap: .9rem; padding: .6rem .8rem; border-radius: 7px; border: 1px solid rgba(6,42,82,.3);
   background: linear-gradient(150deg, rgba(255,255,255,.5), rgba(255,255,255,.26) 50%, rgba(190,222,255,.32));
   backdrop-filter: blur(26px) saturate(1.9); -webkit-backdrop-filter: blur(26px) saturate(1.9);
