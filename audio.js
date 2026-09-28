@@ -2,7 +2,10 @@
 (() => {
   const $ = id => document.getElementById(id);
   const snd = $('snd');
-  let player = null, ready = false, wantPlay = false, playing = false;
+  const vol = $('vol');
+  let player = null, ready = false, wantPlay = false, playing = false, volume = 60;
+  try { const v = parseInt(localStorage.getItem('gh-vol'), 10); if (v >= 0 && v <= 100) volume = v; } catch (e) { /* ohne Speicher weiter */ }
+  vol.value = volume; vol.style.setProperty('--v', volume + '%');
 
   function setBtn() { snd.classList.toggle('off', !playing); snd.setAttribute('aria-pressed', String(playing)); }
 
@@ -13,7 +16,7 @@
         host: 'https://www.youtube-nocookie.com', width: '200', height: '200', videoId: id,
         playerVars: { autoplay: 0, controls: 0, disablekb: 1, loop: 1, playlist: id, playsinline: 1, rel: 0, modestbranding: 1, origin: location.origin },
         events: {
-          onReady: () => { ready = true; player.setVolume(60); if (wantPlay) player.playVideo(); },
+          onReady: () => { ready = true; player.setVolume(volume); if (wantPlay) player.playVideo(); },
           onStateChange: e => { playing = e.data === YT.PlayerState.PLAYING; setBtn(); },
         },
       });
@@ -29,6 +32,11 @@
       if (playing) player.pauseVideo(); else player.playVideo();
     },
   };
+  vol.addEventListener('input', () => {
+    volume = +vol.value; vol.style.setProperty('--v', volume + '%');
+    if (ready) { player.setVolume(volume); if (volume > 0 && player.isMuted()) player.unMute(); }
+    try { localStorage.setItem('gh-vol', String(volume)); } catch (e) { /* egal */ }
+  });
   snd.addEventListener('click', e => { e.stopPropagation(); AudioFX.toggle(); });
   setBtn();
   AudioFX.init(window.PROFILE && window.PROFILE.music);
