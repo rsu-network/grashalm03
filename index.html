@@ -102,6 +102,11 @@
     <p class="foot"><span class="live"></span>grashalm03.top</p>
   </section>
 
+  <button class="want" id="want" type="button">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h13M12 6l6 6-6 6"/></svg>
+    <span>Want one too?</span>
+  </button>
+
   <p class="joke">Imagine paying <b>5€</b> for a profile site</p>
 
   <p class="hint" id="hint">Zieh am Badge · Doppelklick dreht ihn um</p>
@@ -129,6 +134,24 @@
     <p class="info-sub">Alles hier wird nur in deinem Browser gelesen, nichts wird gespeichert. Einzige Ausnahme: Die IP-Abfrage geht an ipwho.is, und nur, weil du auf das Geschenk geklickt hast.</p>
     <div class="info-grid" id="infoGrid"></div>
     <div class="info-bar"><span>Tools kommen bald.</span><button type="button" id="infoCopy">Alles kopieren</button></div>
+  </div>
+</section>
+
+<!-- Angebot-Fenster -->
+<section class="info" id="offer" hidden role="dialog" aria-modal="true" aria-labelledby="offerTitle">
+  <div class="info-card offer-card">
+    <button class="info-x" id="offerX" type="button" aria-label="Schließen">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+    <h2 id="offerTitle">Also want a profile website <em>like this?</em></h2>
+    <p class="offer-sub">I can make one for you.</p>
+    <div class="offer-actions">
+      <a class="offer-cta" id="offerCta" href="#" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path id="offerIcon" d=""/></svg>
+        <span>Add me on Discord</span>
+      </a>
+      <button type="button" class="offer-copy" id="offerCopy">Copy @grashalm03</button>
+    </div>
   </div>
 </section>
 

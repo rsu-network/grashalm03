@@ -213,6 +213,8 @@
   }
   pollDiscord(); setInterval(pollDiscord, 30000);
 
+  (function () { const p = $('offerIcon'); if (p) p.setAttribute('d', ICONS.discord); })();
+
   // ---------- Tab-Titel: tippt sich, reagiert auf Tab-Wechsel ----------
   (function () {
     if (reduce) return;

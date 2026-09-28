@@ -113,3 +113,25 @@
     setTimeout(() => (copyBtn.textContent = 'Alles kopieren'), 1600);
   });
 })();
+
+// ---------- Angebot: "Want one too?" ----------
+(() => {
+  const $ = id => document.getElementById(id);
+  const btn = $('want'), dlg = $('offer'), x = $('offerX'), cta = $('offerCta'), copy = $('offerCopy');
+  const P = window.PROFILE || {};
+  const dl = (P.links || []).find(l => l.icon === 'discord');
+  if (dl) { cta.href = dl.url; if (dl.handle) copy.textContent = 'Copy ' + dl.handle; }
+  let last = null;
+  function open() { last = document.activeElement; dlg.hidden = false; requestAnimationFrame(() => dlg.classList.add('in')); x.focus(); }
+  function close() { dlg.classList.remove('in'); setTimeout(() => { dlg.hidden = true; if (last) last.focus(); }, 300); }
+  btn.addEventListener('click', open);
+  x.addEventListener('click', close);
+  dlg.addEventListener('click', e => { if (e.target === dlg) close(); });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && !dlg.hidden) close(); });
+  copy.addEventListener('click', async () => {
+    const t = dl && dl.handle ? dl.handle : '';
+    const old = copy.textContent;
+    try { await navigator.clipboard.writeText(t); copy.textContent = 'Copied'; } catch (e) { copy.textContent = 'Not possible'; }
+    setTimeout(() => (copy.textContent = old), 1600);
+  });
+})();
