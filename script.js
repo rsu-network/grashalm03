@@ -93,12 +93,6 @@
   addEventListener('pointerup', () => dot.classList.remove('big'));
 
 
-  // ---------- Rückseite: Über mich ----------
-  (function () {
-    const ul = $('bkBio'); const seen = new Set(), lines = [P.role, ...P.bio].filter(t => { const k = t && t.toLowerCase().replace(/[.!\s]+$/, ''); if (!k || seen.has(k)) return false; seen.add(k); return true; });
-    lines.forEach(t => { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
-  })();
-
 
   // ---------- QR-Code, Gender, Abzeichen ----------
   (function () {
@@ -107,9 +101,7 @@
       const n = q.getModuleCount(), pad = 2; let d = '';
       for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) d += 'M' + (c + pad) + ' ' + (r + pad) + 'h1v1h-1z';
       $('qr').innerHTML = '<svg viewBox="0 0 ' + (n + pad * 2) + ' ' + (n + pad * 2) + '" shape-rendering="crispEdges" aria-hidden="true"><rect width="100%" height="100%" fill="#fff"/><path d="' + d + '" fill="#062a52"/></svg>';
-    } else $('qr').closest('.qrbox').hidden = true;
-    $('gender').textContent = P.gender || '';
-    if (!P.gender) $('gender').closest('dl').hidden = true;
+    } else $('qr').closest('.qrwrap').hidden = true;
 
     const BI = {
       verified: 'M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3ZM9 12l2 2 4-4',
@@ -118,7 +110,7 @@
       creator: 'M4 6h16v12H4ZM10 9.5v5l4.5-2.5Z',
       star: 'M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8 6.8 19.5l1-5.8-4.2-4.1 5.8-.8Z',
     };
-    ['badgesPanel', 'badgesBack'].forEach(id => {
+    ['badgesPanel'].forEach(id => {
       const box = $(id);
       (P.badges || []).forEach(b => {
         const s = document.createElement('span'); s.className = 'bdg'; s.dataset.tip = b.label; s.setAttribute('role', 'img'); s.setAttribute('aria-label', b.label);
@@ -126,6 +118,52 @@
         const p = document.createElementNS(NS, 'path'); p.setAttribute('d', BI[b.icon] || BI.star); v.appendChild(p); s.appendChild(v); box.appendChild(s);
       });
     });
+  })();
+
+
+  // ---------- Ortszeit & Wetter München ----------
+  (function () {
+    const clock = $('clock');
+    const fmt = new Intl.DateTimeFormat('de-DE', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    const tick = () => { clock.textContent = fmt.format(new Date()); };
+    tick(); setInterval(tick, 1000);
+
+    const I = {
+      sun: 'M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8ZM12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M5.6 18.4 7 17M17 7l1.4-1.4',
+      moon: 'M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z',
+      cloud: 'M7 18h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7.1 9.2 4.4 4.4 0 0 0 7 18Z',
+      part: 'M8.5 9.5a3 3 0 1 1 5.3-1.9M11 2.5v1.2M4.3 5.3l.9.9M2.5 10h1.2M8 21h9a3.5 3.5 0 0 0 .5-6.96A5 5 0 0 0 8.2 14.2 3.4 3.4 0 0 0 8 21Z',
+      rain: 'M7 14h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7.1 5.2 4.4 4.4 0 0 0 7 14ZM8 17l-1 3M12 17l-1 3M16 17l-1 3',
+      snow: 'M7 14h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7.1 5.2 4.4 4.4 0 0 0 7 14ZM8 18h.01M12 18h.01M16 18h.01M10 21h.01M14 21h.01',
+      storm: 'M7 14h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7.1 5.2 4.4 4.4 0 0 0 7 14ZM13 15l-3 4h3l-2 3',
+      fog: 'M4 8h16M6 12h12M4 16h16M8 20h8',
+    };
+    function decode(code, day) {
+      if (code === 0) return [day ? 'sun' : 'moon', 'Klar'];
+      if (code === 1) return [day ? 'sun' : 'moon', 'Überwiegend klar'];
+      if (code === 2) return ['part', 'Teils bewölkt'];
+      if (code === 3) return ['cloud', 'Bedeckt'];
+      if (code === 45 || code === 48) return ['fog', 'Nebel'];
+      if (code >= 51 && code <= 57) return ['rain', 'Nieselregen'];
+      if (code >= 61 && code <= 67) return ['rain', 'Regen'];
+      if (code >= 71 && code <= 77) return ['snow', 'Schnee'];
+      if (code >= 80 && code <= 82) return ['rain', 'Schauer'];
+      if (code === 85 || code === 86) return ['snow', 'Schneeschauer'];
+      if (code >= 95) return ['storm', 'Gewitter'];
+      return ['cloud', 'Wolkig'];
+    }
+    async function weather() {
+      try {
+        const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=48.1374&longitude=11.5755&current=temperature_2m,weather_code,is_day&timezone=Europe%2FBerlin');
+        const c = (await r.json()).current; if (!c) return;
+        const [ic, txt] = decode(c.weather_code, c.is_day === 1);
+        const box = $('wxIcon'); box.textContent = '';
+        const v = document.createElementNS(NS, 'svg'); v.setAttribute('viewBox', '0 0 24 24'); v.setAttribute('aria-hidden', 'true');
+        const p = document.createElementNS(NS, 'path'); p.setAttribute('d', I[ic]); v.appendChild(p); box.appendChild(v); box.hidden = false;
+        $('wxText').textContent = Math.round(c.temperature_2m) + '° · ' + txt;
+      } catch (e) { console.warn('weather failed:', e && e.message); }
+    }
+    weather(); setInterval(weather, 15 * 60 * 1000);
   })();
 
   // ---------- Discord-Status (Lanyard) ----------

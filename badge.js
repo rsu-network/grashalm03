@@ -187,6 +187,14 @@
   };
   addEventListener('pointerup', release);
   addEventListener('pointercancel', release);
+  // Ausweis-Effekt: Folien-Glanz, Foto-Parallaxe und Neigung folgen der Maus
+  const setFx = (px, py) => { badge.style.setProperty('--px', px.toFixed(3)); badge.style.setProperty('--py', py.toFixed(3)); };
+  badge.addEventListener('pointermove', e => {
+    const r = badge.getBoundingClientRect();
+    setFx(Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), Math.min(1, Math.max(0, (e.clientY - r.top) / r.height)));
+  });
+  badge.addEventListener('pointerleave', () => setFx(.5, .5));
+
   // Nach einem Zieh-Vorgang keinen Link auslösen
   badge.addEventListener('click', e => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
 

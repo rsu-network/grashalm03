@@ -63,29 +63,18 @@
       <!-- Rückseite -->
       <div class="back">
         <div class="mag" aria-hidden="true"></div>
-        <div class="bk-top">
-          <div class="bk-col">
-            <h3 class="bk-title">Über mich</h3>
-            <ul class="bk-list" id="bkBio"></ul>
-          </div>
-          <div class="qrbox">
-            <div class="qr" id="qr" role="img" aria-label="QR-Code, führt zu einem YouTube-Video"></div>
-            <span>Scan mich</span>
-          </div>
+        <div class="qrwrap">
+          <div class="qr" id="qr" role="img" aria-label="QR-Code, führt zu einem YouTube-Video"></div>
         </div>
-        <h3 class="bk-title">Abzeichen</h3>
-        <div class="badges" id="badgesBack"></div>
-        <dl class="bk-info"><div><dt>Gender</dt><dd id="gender"></dd></div></dl>
         <div id="bkDisc" hidden>
-          <h3 class="bk-title">Discord</h3>
           <div id="backPres" class="pres-slot"></div>
         </div>
-        <p class="bk-foot">Gefunden? Bitte zurück an <b>grashalm03.top</b></p>
       </div>
 
       <button class="flipbtn" id="flipbtn" type="button" aria-label="Ausweis umdrehen" title="Umdrehen">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 4v6h-6l2.3-2.3A5.5 5.5 0 0 0 6.5 12H4Zm16 0a8 8 0 0 1-13.7 5.6L4 20v-6h6l-2.3 2.3A5.5 5.5 0 0 0 17.5 12H20Z"/></svg>
       </button>
+      <i class="foil" aria-hidden="true"></i>
       <i class="holo" aria-hidden="true"></i>
     </div>
   </article>
@@ -97,6 +86,12 @@
     <ul class="links" id="links"></ul>
 
     <div class="presence" id="presence" hidden></div>
+
+    <div class="local" id="local">
+      <span class="wx" id="wxIcon" hidden></span>
+      <span class="lc"><b>München</b><span id="wxText"></span></span>
+      <span class="lt" id="clock" aria-label="Ortszeit München">--:--:--</span>
+    </div>
 
     <p class="foot"><span class="live"></span>grashalm03.top</p>
   </section>

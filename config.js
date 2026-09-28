@@ -8,9 +8,6 @@ window.PROFILE = {
   // QR-Code auf der Rückseite: wohin er beim Scannen führt
   qr: 'https://www.youtube.com/watch?v=XfELJU1mRMg',
 
-  // Feld "Gender" auf der Rückseite
-  gender: 'E-Mail',
-
   // Abzeichen (icon: verified | coder | gamer | creator | star)
   badges: [
     { label: 'Verifiziert', icon: 'verified' },
