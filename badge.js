@@ -187,5 +187,7 @@
   // Nach einem Zieh-Vorgang keinen Link auslösen
   badge.addEventListener('click', e => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
 
+  // Beat-Stoß: Ausweis hüpft im Takt (dx seitlich, up nach oben)
+  window.badgeKick = (dx, up) => { if (!pts || drag) return; const c = pts[N + 1]; c.px -= dx; c.py += up; };
   window.badgeStart = start;
 })();

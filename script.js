@@ -3,7 +3,7 @@
   const $ = id => document.getElementById(id);
   const dot = $('dot'), stage = $('stage');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const M = window.MOUSE;
+  const M = (window.MOUSE = { x: -9999, y: -9999, last: -1e9 });
 
   // ---------- Inhalt aus config.js ----------
   document.title = P.name;
@@ -20,7 +20,12 @@
     const w = document.createElement('span'); w.className = 'ch'; w.setAttribute('aria-hidden', 'true'); w.style.setProperty('--i', i);
     if (m && i >= m[1].length) w.classList.add('acc');
     const s = document.createElement('span'); s.className = 'sw'; s.textContent = ch; w.appendChild(s); title.appendChild(w);
-    letters.push({ w, s, i });
+    letters.push({ w, s, i, ch });
+    if (!reduce) {   // Buchstaben "entschlüsseln" sich
+      const pool = 'abcdefghijklmnopqrstuvwxyz0123456789#%&*+';
+      setTimeout(() => { const end = performance.now() + 520;
+        const id = setInterval(() => { if (performance.now() > end) { s.textContent = ch; clearInterval(id); } else s.textContent = pool[(Math.random() * pool.length) | 0]; }, 45); }, 250 + i * 65 + 1500);
+    }
   });
 
   const ICONS = {
@@ -48,6 +53,10 @@
     const ar = svg('M9 5l7 7-7 7'); ar.classList.add('arrow');
     const p = ar.firstChild; p.setAttribute('fill', 'none'); p.setAttribute('stroke', 'currentColor'); p.setAttribute('stroke-width', '2'); p.setAttribute('stroke-linecap', 'round'); p.setAttribute('stroke-linejoin', 'round');
     a.appendChild(ar);
+    a.addEventListener('pointermove', e => { const r = a.getBoundingClientRect();
+      a.style.setProperty('--ry', (((e.clientX - r.left) / r.width - .5) * 8).toFixed(2) + 'deg');
+      a.style.setProperty('--rx', (-((e.clientY - r.top) / r.height - .5) * 10).toFixed(2) + 'deg'); });
+    a.addEventListener('pointerleave', () => { a.style.setProperty('--rx', '0deg'); a.style.setProperty('--ry', '0deg'); });
     li.appendChild(a); $('links').appendChild(li);
   });
 
@@ -73,7 +82,9 @@
     const active = performance.now() - M.last < 2600;
     for (const L of letters) {
       const r = L.w.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height;
+      const A = window.AUDIO, since = performance.now() - (A ? A.beatT : -1e9);
       let rot = Math.sin(tt * 1.5 + L.i * .55) * 1.6, lift = Math.sin(tt * 1.1 + L.i * .8) * 1.5, sc = 1;
+      if (A) { lift -= Math.exp(-since / 240) * 18 * (.55 + .45 * Math.sin(L.i * 1.1)) + A.bass * 5; rot += Math.sin(L.i + tt * 3) * A.mid * 4; sc += A.bass * .05; }
       if (active) {
         const dx = cx - M.x, dy = cy - M.y, near = Math.exp(-(dx * dx + dy * dy) / (2 * 150 * 150));
         rot += Math.sign(dx || 1) * Math.min(1, Math.abs(dx) / 50) * near * 15;
@@ -89,11 +100,15 @@
     M.x = e.clientX; M.y = e.clientY; M.last = performance.now();
     dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
   });
-  addEventListener('pointerdown', e => { dot.classList.add('big'); if (window.FX) FX.burst(e.clientX, e.clientY); });
+  addEventListener('pointerdown', e => {
+    dot.classList.add('big');
+    if (reduce) return;
+    const r = document.createElement('i'); r.className = 'ripple'; r.style.left = e.clientX + 'px'; r.style.top = e.clientY + 'px';
+    document.body.appendChild(r); r.addEventListener('animationend', () => r.remove());
+  });
   addEventListener('pointerup', () => dot.classList.remove('big'));
 
   // ---------- Enter: Wolkendecke reißt auf ----------
-  const music = $('music');
   $('enter').addEventListener('click', () => {
     $('enter').classList.add('out');
     if (window.FX) FX.start();
@@ -103,6 +118,6 @@
       requestAnimationFrame(sway);
     }, reduce ? 0 : 1500);
     setTimeout(() => ($('enter').hidden = true), 900);
-    if (P.music) { music.src = P.music; music.volume = .4; music.play().catch(() => {}); }
+    if (P.music && window.AudioFX) AudioFX.start(P.music);
   });
 })();

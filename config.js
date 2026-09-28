@@ -8,8 +8,8 @@ window.PROFILE = {
   // Wechselnde Bio-Zeilen (Typewriter). Eine Zeile = kein Wechsel.
   bio: ['Hi, ich bin Grashalm03.', 'Coder & Gamer.', 'Willkommen auf meiner Seite.'],
 
-  // Optional: Musik-Datei ins Repo legen (z. B. music.mp3) und hier eintragen. '' = keine Musik.
-  music: '',
+  // Musik-Datei im Repo. Startet beim Klick auf "Betreten". '' = keine Musik.
+  music: 'music.mp3',
 
   // Links: label, url, icon (discord | github | youtube | twitch | tiktok | instagram | x | link), handle optional
   links: [
