@@ -7,7 +7,11 @@
 
   // ---------- Inhalt aus config.js ----------
   document.title = P.name;
-  $('name').textContent = P.name;
+  const m = P.name.match(/^(.*?)(\d+)$/);
+  const setName = (el, accent) => { el.textContent = ''; el.append(m ? m[1] : P.name);
+    if (m) { const b = document.createElement(accent ? 'b' : 'span'); b.textContent = m[2]; el.append(b); } };
+  setName($('name'), true); setName($('badgeName'), false);
+  if (P.role) $('role').textContent = P.role;
 
   const ICONS = {
     discord: 'M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.2.5a18 18 0 0 0-4.4 0L10.6 3a19.8 19.8 0 0 0-4.9 1.4C2.6 9 1.8 13.5 2.2 18a19.9 19.9 0 0 0 6 3l.8-1.3a13 13 0 0 1-2-1l.5-.4a14.2 14.2 0 0 0 12.1 0l.5.4a13 13 0 0 1-2 1l.8 1.3a19.9 19.9 0 0 0 6-3c.5-5.2-.8-9.7-3.6-13.6ZM8.7 15.3c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4Zm6.6 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4Z',
@@ -28,10 +32,11 @@
     const a = document.createElement('a'); a.href = l.url; a.rel = 'noopener noreferrer';
     a.title = l.label; a.setAttribute('aria-label', l.label); a.draggable = false;
     if (l.url !== '#') a.target = '_blank';
-    a.appendChild(svg(ICONS[l.icon] || ICONS.link));
-    const t = document.createElement('span'); t.textContent = l.label; a.appendChild(t);
-    const ar = svg('M9 5l7 7-7 7'); ar.classList.add('arrow'); ar.setAttribute('fill', 'none');
-    ar.firstChild.setAttribute('stroke', 'currentColor'); ar.firstChild.setAttribute('stroke-width', '2'); ar.firstChild.setAttribute('stroke-linecap', 'round'); ar.firstChild.setAttribute('stroke-linejoin', 'round');
+    const ic = document.createElement('span'); ic.className = 'ic'; ic.appendChild(svg(ICONS[l.icon] || ICONS.link)); a.appendChild(ic);
+    const t = document.createElement('span'); t.className = 'lb'; t.textContent = l.label; a.appendChild(t);
+    if (l.handle) { const h = document.createElement('span'); h.className = 'hd'; h.textContent = l.handle; a.appendChild(h); }
+    const ar = svg('M9 5l7 7-7 7'); ar.classList.add('arrow');
+    const p = ar.firstChild; p.setAttribute('fill', 'none'); p.setAttribute('stroke', 'currentColor'); p.setAttribute('stroke-width', '2'); p.setAttribute('stroke-linecap', 'round'); p.setAttribute('stroke-linejoin', 'round');
     a.appendChild(ar);
     li.appendChild(a); $('links').appendChild(li);
   });
@@ -51,61 +56,47 @@
     })();
   })();
 
-  // ---------- Hintergrund: Flow-Field ----------
-  const start = performance.now();
-  let W, H, dpr, parts = [], t = 0;
-  const mouse = { x: 0, y: 0, tx: 0, ty: 0, on: false, down: 0 };
-  const spawn = () => ({ x: Math.random() * W, y: Math.random() * H, life: 100 + Math.random() * 200 });
+  // ---------- Hintergrund: ruhiger Lichtstaub ----------
+  let W, H, dpr, dust = [];
+  const mouse = { x: .5, y: .5, sx: .5, sy: .5 };
+  const rnd = (a, b) => a + Math.random() * (b - a);
 
   function resize() {
     dpr = Math.min(devicePixelRatio || 1, 2);
     W = canvas.width = innerWidth * dpr; H = canvas.height = innerHeight * dpr;
-    ctx.fillStyle = '#03060c'; ctx.fillRect(0, 0, W, H);
-    parts = Array.from({ length: Math.min(1400, Math.floor(innerWidth * innerHeight / 1400)) }, spawn);
-    mouse.x = mouse.tx = W / 2; mouse.y = mouse.ty = H / 2;
+    dust = Array.from({ length: Math.min(110, Math.floor(innerWidth * innerHeight / 14000)) }, () => ({
+      x: Math.random() * W, y: Math.random() * H, z: rnd(.3, 1),          // z = Tiefe (Größe, Tempo, Parallax)
+      ph: Math.random() * 6.28, sp: rnd(.4, 1.2),
+    }));
   }
   addEventListener('resize', resize); resize();
 
-  const angle = (x, y) => { const s = .0014 / dpr;
-    return (Math.sin(x * s + t * .4) + Math.cos(y * s * 1.3 - t * .3) + Math.sin((x + y) * s * .7 + t * .2)) * 1.6; };
-
+  let t = 0;
   function frame() {
-    t += .006;
-    mouse.x += (mouse.tx - mouse.x) * .12; mouse.y += (mouse.ty - mouse.y) * .12;
-    ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = 'rgba(3,6,12,.09)'; ctx.fillRect(0, 0, W, H);
-    ctx.globalCompositeOperation = 'lighter'; ctx.lineWidth = 1.1 * dpr;
-    const R = 260 * dpr;
-    for (const p of parts) {
-      let a = angle(p.x, p.y), sp = 1.4 * dpr;
-      const dx = p.x - mouse.x, dy = p.y - mouse.y, d = Math.hypot(dx, dy), near = mouse.on && d < R;
-      if (near) { const k = 1 - d / R; a = Math.atan2(dy, dx) + Math.PI / 2 + k; sp += k * 4.5 * dpr * (1 + mouse.down * 2); }
-      const nx = p.x + Math.cos(a) * sp, ny = p.y + Math.sin(a) * sp, b = near ? .55 : .22;
-      ctx.strokeStyle = `rgba(${140 + (b * 90) | 0},${205 + (b * 40) | 0},255,${b})`;
-      ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(nx, ny); ctx.stroke();
-      p.x = nx; p.y = ny;
-      if (--p.life < 0 || p.x < 0 || p.x > W || p.y < 0 || p.y > H) Object.assign(p, spawn());
+    t += .01;
+    mouse.sx += (mouse.x - mouse.sx) * .04; mouse.sy += (mouse.y - mouse.sy) * .04;
+    ctx.clearRect(0, 0, W, H);
+    for (const p of dust) {
+      p.y -= .12 * p.z * dpr; p.x += Math.sin(t * p.sp + p.ph) * .08 * dpr;
+      if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
+      const px = p.x + (mouse.sx - .5) * -60 * p.z * dpr, py = p.y + (mouse.sy - .5) * -40 * p.z * dpr;
+      const tw = .45 + .55 * Math.sin(t * 2 * p.sp + p.ph), r = (.6 + p.z * 1.5) * dpr;
+      ctx.beginPath(); ctx.arc(px, py, r, 0, 6.283);
+      ctx.fillStyle = `rgba(190,228,255,${(.12 + .38 * p.z) * tw})`;
+      ctx.shadowColor = 'rgba(90,190,255,.9)'; ctx.shadowBlur = 8 * dpr * p.z; ctx.fill();
     }
-    mouse.down *= .93;
+    ctx.shadowBlur = 0;
     if (!reduce) requestAnimationFrame(frame);
   }
   frame();
 
-  // ---------- Maus / Tilt ----------
-  function move(x, y) {
-    mouse.tx = x * dpr; mouse.ty = y * dpr; mouse.on = true;
-    dot.style.transform = glow.style.transform = `translate(${x}px, ${y}px)`;
-  }
-  let idle = performance.now();
-  addEventListener('pointermove', e => { idle = performance.now(); move(e.clientX, e.clientY); });
-  document.addEventListener('pointerleave', () => (mouse.on = false));
-  addEventListener('pointerdown', () => { mouse.down = 1; dot.classList.add('big'); });
+  // ---------- Maus ----------
+  addEventListener('pointermove', e => {
+    mouse.x = e.clientX / innerWidth; mouse.y = e.clientY / innerHeight;
+    dot.style.transform = glow.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+  });
+  addEventListener('pointerdown', () => dot.classList.add('big'));
   addEventListener('pointerup', () => dot.classList.remove('big'));
-  setInterval(() => {
-    if (performance.now() - idle > 2500) {
-      const s = performance.now() / 1000;
-      move(innerWidth / 2 + Math.cos(s * .6) * innerWidth * .3, innerHeight / 2 + Math.sin(s * .9) * innerHeight * .25);
-    }
-  }, 30);
 
   // ---------- Enter ----------
   const music = $('music');

@@ -32,12 +32,16 @@
 
   function measure() {
     bw = badge.offsetWidth; bh = badge.offsetHeight;
-    ropeLen = Math.max(70, Math.min(H / 2 - bh / 2 + 30, H - bh - 20));
+    const narrow = W <= 820;
+    const cx = narrow ? W / 2 : W * .29;              // Ausweis links, Inhalt rechts
+    const cy = narrow ? H * .34 : H / 2;
+    ropeLen = Math.max(70, Math.min(cy - bh / 2 + 30, H - bh - 20));
     const seg = ropeLen / N;
     lens = [0]; for (let i = 1; i <= N; i++) lens.push(seg);
     lens.push(bh / 2);
     total = ropeLen + bh / 2;
-    anchor = { x: W / 2, y: -30 };
+    anchor = { x: cx, y: -30 };
+    document.documentElement.style.setProperty('--bx', (cx / W * 100).toFixed(1) + '%');
   }
 
   function start() {
