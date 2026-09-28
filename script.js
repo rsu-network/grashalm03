@@ -7,7 +7,6 @@
 
   // ---------- Inhalt aus config.js ----------
   document.title = P.name;
-  if (P.role) $('role').textContent = P.role;
   const m = P.name.match(/^(.*?)(\d+)$/);
   const setBadgeName = () => { const el = $('badgeName'); el.textContent = ''; el.append(m ? m[1] : P.name);
     if (m) { const s = document.createElement('span'); s.textContent = m[2]; el.append(s); } };

@@ -15,11 +15,8 @@ window.PROFILE = {
     { label: 'Schmerzen', icon: 'bolt' },
   ],
 
-  // Kurzrolle auf dem Ausweis
-  role: 'Coder & Gamer',
-
   // Wechselnde Bio-Zeilen (Typewriter). Eine Zeile = kein Wechsel.
-  bio: ['Hi, ich bin Grashalm03.', 'Coder & Gamer.', 'Willkommen auf meiner Seite.'],
+  bio: ['Hi, ich bin Grashalm03.', 'Willkommen auf meiner Seite.'],
 
   // YouTube-Video-ID der Musik (der Teil nach v= im Link). Startet beim Klick auf "Betreten". '' = keine Musik.
   music: 'w3qzlGCZXsg',
