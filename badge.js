@@ -7,7 +7,8 @@
 
   let W, H, dpr, bw, bh, ropeLen, total;
   let pts = null, lens = [], anchor = { x: 0, y: -30 };
-  let drag = null, moved = false, ry = 0, acc = 0, last = 0;
+  let drag = null, moved = false, ry = 0, acc = 0, last = 0, flipT = 0, flipA = 0, isBack = false;
+  const face = $('face');
 
   // Barcode aus dem Namen erzeugen
   (function barcode() {
@@ -101,9 +102,11 @@
     const dx = c.x - a.x, dy = c.y - a.y;
     const rot = -Math.atan2(dx, dy);
     ry += (Math.max(-40, Math.min(40, (c.x - c.px) * 3.2)) - ry) * .15;
+    flipA += (flipT - flipA) * .11;
+    if ((flipA > 90) !== isBack) { isBack = flipA > 90; face.classList.toggle('flipped', isBack); }
 
     badge.style.transform =
-      `translate3d(${c.x - bw / 2}px,${c.y - bh / 2}px,0) rotate(${rot}rad) perspective(900px) rotateY(${ry}deg)`;
+      `translate3d(${c.x - bw / 2}px,${c.y - bh / 2}px,0) rotate(${rot}rad) perspective(900px) rotateY(${ry + (flipA > 90 ? flipA - 180 : flipA)}deg)`;
     badge.style.setProperty('--sx', (50 + ry * 2.2 + rot * 70).toFixed(1) + '%');
 
     // Band zeichnen
@@ -187,5 +190,9 @@
   // Nach einem Zieh-Vorgang keinen Link auslösen
   badge.addEventListener('click', e => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
 
+  const flip = () => { flipT = flipT ? 0 : 180; hint.classList.add('gone'); };
+  badge.addEventListener('dblclick', flip);
+  $('flipbtn').addEventListener('click', flip);
+  window.badgeFlip = flip;
   window.badgeStart = start;
 })();

@@ -106,6 +106,78 @@
   });
   addEventListener('pointerup', () => dot.classList.remove('big'));
 
+
+  // ---------- Rückseite: Über mich ----------
+  (function () {
+    const ul = $('bkBio'); const lines = [...new Set([P.role, ...P.bio].filter(Boolean))];
+    lines.forEach(t => { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
+  })();
+
+  // ---------- Discord-Status (Lanyard) ----------
+  const STATUS = { online: ['Online', '#23a559'], idle: ['Abwesend', '#f0b232'], dnd: ['Bitte nicht stören', '#f23f43'], offline: ['Offline', '#80848e'] };
+  function makePres() {
+    const d = document.createElement('div'); d.className = 'pres';
+    d.innerHTML = '<span class="pav"><img alt="" draggable="false"><i class="sd"></i></span><span class="ptx"><b class="pn"></b><span class="pt"></span></span>';
+    return d;
+  }
+  const presBoxes = [makePres(), makePres()];
+  $('presence').appendChild(presBoxes[0]); $('backPres').appendChild(presBoxes[1]);
+
+  function activityText(d) {
+    if (d.listening_to_spotify && d.spotify) return 'Hört ' + d.spotify.song + ' – ' + d.spotify.artist;
+    const acts = (d.activities || []).filter(a => a.type !== 4);
+    if (acts[0]) return (acts[0].type === 0 ? 'Spielt ' : '') + acts[0].name;
+    const custom = (d.activities || []).find(a => a.type === 4);
+    return custom && custom.state ? custom.state : '';
+  }
+  function showPresence(d) {
+    const u = d.discord_user || {}, st = STATUS[d.discord_status] || STATUS.offline;
+    const name = u.global_name || u.username || P.name;
+    const avatar = u.avatar ? 'https://cdn.discordapp.com/avatars/' + u.id + '/' + u.avatar + '.png?size=128' : '';
+    const act = activityText(d);
+    presBoxes.forEach(b => {
+      const img = b.querySelector('img'); if (avatar) img.src = avatar; else img.removeAttribute('src');
+      b.querySelector('.pn').textContent = name;
+      b.querySelector('.pt').textContent = act || st[0];
+      b.querySelector('.sd').style.background = st[1];
+    });
+    $('presence').hidden = false; $('bkDisc').hidden = false;
+    const sf = $('stFront'); sf.hidden = false;
+    sf.querySelector('.sd').style.background = st[1]; sf.querySelector('span').textContent = st[0];
+  }
+  async function pollDiscord() {
+    if (!P.discordId) return;
+    try {
+      const r = await fetch('https://api.lanyard.rest/v1/users/' + P.discordId, { cache: 'no-store' });
+      const j = await r.json();
+      if (j && j.success) showPresence(j.data);
+    } catch (e) { /* Status bleibt versteckt */ }
+  }
+  pollDiscord(); setInterval(pollDiscord, 30000);
+
+  // ---------- Tab-Titel: tippt sich, reagiert auf Tab-Wechsel ----------
+  (function () {
+    if (reduce) return;
+    const words = [P.name.toLowerCase(), P.role ? P.role.toLowerCase() : '', 'grashalm03.top'].filter(Boolean);
+    let wi = 0, ci = 0, del = false, timer = 0;
+    function tick() {
+      const w = words[wi];
+      document.title = (w.slice(0, ci) || '‎') + (ci < w.length || del ? '_' : '');
+      let t = del ? 55 : 140;
+      if (!del && ci === w.length) { del = true; t = 2600; }
+      else if (del && ci === 0) { del = false; wi = (wi + 1) % words.length; t = 500; }
+      else ci += del ? -1 : 1;
+      timer = setTimeout(tick, t);
+    }
+    document.addEventListener('visibilitychange', () => {
+      clearTimeout(timer);
+      if (document.hidden) document.title = 'komm zurück…';
+      else { ci = 0; del = false; tick(); }
+    });
+    let started = false;
+    $('enter').addEventListener('click', () => { if (!started) { started = true; tick(); } });
+  })();
+
   // ---------- Enter: Wolkendecke reißt auf ----------
   $('enter').addEventListener('click', () => {
     $('enter').classList.add('out');

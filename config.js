@@ -2,6 +2,9 @@
 window.PROFILE = {
   name: 'Grashalm03',
 
+  // Discord-Benutzer-ID für den Live-Status (String lassen!). Voraussetzung: dem Lanyard-Server beitreten (discord.gg/lanyard).
+  discordId: '1446491991239037000',
+
   // Kurzrolle auf dem Ausweis
   role: 'Coder & Gamer',
 

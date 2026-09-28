@@ -4,11 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Grashalm03</title>
-<meta name="description" content="Grashalm03 – Profil.">
-<meta name="theme-color" content="#7fb9f5">
+<meta name="description" content="Grashalm03 – Coder, Gamer und mehr. Profil und Links.">
+<meta name="theme-color" content="#2a78dc">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="avatar.png">
+<meta property="og:type" content="website">
 <meta property="og:title" content="Grashalm03">
-<meta property="og:description" content="Profil von Grashalm03">
+<meta property="og:description" content="Coder, Gamer und mehr – mein Profil.">
 <meta property="og:url" content="https://grashalm03.top">
+<meta property="og:image" content="https://grashalm03.top/avatar.png">
+<meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -19,30 +24,57 @@
   <!-- Ausweis (hängt links) -->
   <article class="badge" id="badge" aria-label="Ausweis von Grashalm03">
     <div class="clip" aria-hidden="true"><i></i></div>
-    <div class="face">
+    <div class="face" id="face">
       <div class="slot" aria-hidden="true"></div>
 
-      <header class="head">
-        <span class="org">GRASHALM<b>03</b></span>
-        <span class="type">ACCESS PASS</span>
-      </header>
+      <!-- Vorderseite -->
+      <div class="front">
+        <header class="head">
+          <span class="org">GRASHALM<b>03</b></span>
+          <span class="type">ACCESS PASS</span>
+        </header>
 
-      <div class="photo">
-        <img id="avatar" src="avatar.svg" alt="Avatar von Grashalm03" draggable="false">
-        <span class="scan" aria-hidden="true"></span>
-        <i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i>
+        <div class="photowrap">
+          <div class="photo">
+            <img id="avatar" src="avatar.png" alt="Profilbild von Grashalm03" draggable="false">
+            <span class="scan" aria-hidden="true"></span>
+            <i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i>
+          </div>
+          <svg class="seal" viewBox="0 0 100 100" aria-hidden="true">
+            <defs><path id="sealpath" d="M50 50m-35 0a35 35 0 1 1 70 0a35 35 0 1 1-70 0"/></defs>
+            <circle cx="50" cy="50" r="47" class="s-bg"/>
+            <g class="s-ring"><text><textPath href="#sealpath">VERIFIED · GRASHALM03 · VERIFIED · GRASHALM03 ·</textPath></text></g>
+            <path class="s-blade" d="M50 68C50 58 49 51 44 43M50 68C51 59 55 53 62 49M50 68C49 62 46 58 39 55"/>
+          </svg>
+        </div>
+
+        <h2 class="bname" id="badgeName">Grashalm03</h2>
+        <p class="role" id="role">Coder &amp; Gamer</p>
+        <p class="status" id="stFront" hidden><i class="sd"></i><span></span></p>
+
+        <div class="meta">
+          <span><em>ID</em> 0003</span>
+          <span><em>LEVEL</em> ∞</span>
+          <span><em>VALID</em> 2026</span>
+        </div>
+        <svg class="barcode" id="barcode" viewBox="0 0 200 30" preserveAspectRatio="none" aria-hidden="true"></svg>
       </div>
 
-      <h2 class="bname" id="badgeName">Grashalm03</h2>
-      <p class="role" id="role">Coder &amp; Gamer</p>
-
-      <div class="meta">
-        <span><em>ID</em> 0003</span>
-        <span><em>LEVEL</em> ∞</span>
-        <span><em>VALID</em> 2026</span>
+      <!-- Rückseite -->
+      <div class="back">
+        <div class="mag" aria-hidden="true"></div>
+        <h3 class="bk-title">Über mich</h3>
+        <ul class="bk-list" id="bkBio"></ul>
+        <div id="bkDisc" hidden>
+          <h3 class="bk-title">Discord</h3>
+          <div id="backPres" class="pres-slot"></div>
+        </div>
+        <p class="bk-foot">Gefunden? Bitte zurück an<br><b>grashalm03.top</b></p>
       </div>
-      <svg class="barcode" id="barcode" viewBox="0 0 200 30" preserveAspectRatio="none" aria-hidden="true"></svg>
 
+      <button class="flipbtn" id="flipbtn" type="button" aria-label="Ausweis umdrehen" title="Umdrehen">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 4v6h-6l2.3-2.3A5.5 5.5 0 0 0 6.5 12H4Zm16 0a8 8 0 0 1-13.7 5.6L4 20v-6h6l-2.3 2.3A5.5 5.5 0 0 0 17.5 12H20Z"/></svg>
+      </button>
       <i class="holo" aria-hidden="true"></i>
     </div>
   </article>
@@ -51,13 +83,14 @@
   <section class="panel" id="panel">
     <h1 class="title" id="name" aria-label="Grashalm03"></h1>
     <p class="bio"><span id="bio"></span><span class="caret">|</span></p>
+    <div class="presence" id="presence" hidden></div>
 
     <ul class="links" id="links"></ul>
 
     <p class="foot"><span class="live"></span>grashalm03.top</p>
   </section>
 
-  <p class="hint" id="hint">Zieh am Badge</p>
+  <p class="hint" id="hint">Zieh am Badge · Doppelklick dreht ihn um</p>
 </main>
 
 <button class="snd" id="snd" type="button" aria-label="Musik an oder aus" aria-pressed="false">
