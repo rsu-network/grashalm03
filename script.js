@@ -82,9 +82,7 @@
     const active = performance.now() - M.last < 2600;
     for (const L of letters) {
       const r = L.w.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height;
-      const A = window.AUDIO, since = performance.now() - (A ? A.beatT : -1e9);
       let rot = Math.sin(tt * 1.5 + L.i * .55) * 1.6, lift = Math.sin(tt * 1.1 + L.i * .8) * 1.5, sc = 1;
-      if (A) { lift -= Math.exp(-since / 240) * 18 * (.55 + .45 * Math.sin(L.i * 1.1)) + A.bass * 5; rot += Math.sin(L.i + tt * 3) * A.mid * 4; sc += A.bass * .05; }
       if (active) {
         const dx = cx - M.x, dy = cy - M.y, near = Math.exp(-(dx * dx + dy * dy) / (2 * 150 * 150));
         rot += Math.sign(dx || 1) * Math.min(1, Math.abs(dx) / 50) * near * 15;
@@ -118,6 +116,6 @@
       requestAnimationFrame(sway);
     }, reduce ? 0 : 1500);
     setTimeout(() => ($('enter').hidden = true), 900);
-    if (P.music && window.AudioFX) AudioFX.start(P.music);
+    if (P.music && window.AudioFX) AudioFX.start();
   });
 })();
