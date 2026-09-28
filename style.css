@@ -308,3 +308,28 @@ body.nogl #sky { background: linear-gradient(180deg, #4f9bec, #dcecff); }
 .lc b { font-size: .95rem; } .lc span { font-size: .82rem; color: var(--ink-soft); }
 .lt { margin-left: auto; font-size: 1.15rem; font-weight: 700; letter-spacing: .04em; font-variant-numeric: tabular-nums; }
 @media (max-width: 820px) { .local { display: none; } }
+
+/* ---------- Spruch ---------- */
+.joke { margin: .9rem 0 0; max-width: 34rem; font-size: .8rem; line-height: 1.5; color: var(--ink-soft); }
+.joke s { text-decoration-thickness: 2px; text-decoration-color: #e0413a; color: var(--ink); font-weight: 700; }
+@media (max-width: 820px) { .joke { display: none; } }
+
+/* Abzeichen mit sichtbarem Namen */
+.badges.lg { flex-wrap: wrap; }
+.badges.lg .bdg { width: auto; height: 38px; padding: 0 14px 0 10px; grid-auto-flow: column; gap: 8px; border-radius: 8px; }
+.badges.lg .bdg svg { width: 20px; height: 20px; }
+.badges.lg .bdg::after { display: none; }
+.lbl { font: 700 13px/1 "Segoe UI", system-ui, sans-serif; letter-spacing: .05em; }
+
+/* Niedrige Bildschirme: rechte Spalte kompakter, damit nichts abgeschnitten wird */
+@media (min-width: 821px) and (max-height: 860px) {
+  .title { font-size: clamp(2.4rem, min(6.6vw, 9vh), 5.8rem); margin-bottom: 1rem; }
+  .badges.lg { margin: -.2rem 0 1rem; gap: 8px; }
+  .badges.lg .bdg { height: 34px; }
+  .links { gap: .45rem; }
+  .links a { padding: .5rem .9rem; }
+  .ic { width: 34px; height: 34px; }
+  .presence, .local { margin-top: .5rem; }
+  .foot { margin-top: 1rem; }
+}
+@media (min-width: 821px) and (max-height: 700px) { .joke { display: none; } }

@@ -8,13 +8,11 @@ window.PROFILE = {
   // QR-Code auf der Rückseite: wohin er beim Scannen führt
   qr: 'https://www.youtube.com/watch?v=XfELJU1mRMg',
 
-  // Abzeichen (icon: verified | coder | gamer | creator | star)
+  // Abzeichen (icon: mug | coder | bolt | gamer | creator | star | verified)
   badges: [
-    { label: 'Verifiziert', icon: 'verified' },
-    { label: 'Coder', icon: 'coder' },
-    { label: 'Gamer', icon: 'gamer' },
-    { label: 'Creator', icon: 'creator' },
-    { label: 'Early Supporter', icon: 'star' },
+    { label: 'Penner', icon: 'mug' },
+    { label: 'Vibe-Coder', icon: 'coder' },
+    { label: 'Schmerzen', icon: 'bolt' },
   ],
 
   // Kurzrolle auf dem Ausweis
