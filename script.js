@@ -2,7 +2,7 @@
   const P = window.PROFILE;
   const $ = id => document.getElementById(id);
   const canvas = $('fx'), ctx = canvas.getContext('2d');
-  const glow = $('glow'), dot = $('dot'), card = $('card'), stage = $('stage');
+  const glow = $('glow'), dot = $('dot'), stage = $('stage');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ---------- Inhalt aus config.js ----------
@@ -26,6 +26,7 @@
   P.links.forEach((l, i) => {
     const li = document.createElement('li'); li.style.setProperty('--i', i);
     const a = document.createElement('a'); a.href = l.url; a.rel = 'noopener noreferrer';
+    a.title = l.label; a.setAttribute('aria-label', l.label); a.draggable = false;
     if (l.url !== '#') a.target = '_blank';
     a.appendChild(svg(ICONS[l.icon] || ICONS.link));
     const t = document.createElement('span'); t.textContent = l.label; a.appendChild(t);
@@ -93,12 +94,6 @@
   function move(x, y) {
     mouse.tx = x * dpr; mouse.ty = y * dpr; mouse.on = true;
     dot.style.transform = glow.style.transform = `translate(${x}px, ${y}px)`;
-    if (!stage.hidden) {
-      const r = card.getBoundingClientRect();
-      const nx = (x - (r.left + r.width / 2)) / innerWidth, ny = (y - (r.top + r.height / 2)) / innerHeight;
-      card.style.setProperty('--ry', (nx * 16).toFixed(2) + 'deg');
-      card.style.setProperty('--rx', (ny * -16).toFixed(2) + 'deg');
-    }
   }
   let idle = performance.now();
   addEventListener('pointermove', e => { idle = performance.now(); move(e.clientX, e.clientY); });
@@ -117,6 +112,7 @@
   $('enter').addEventListener('click', () => {
     $('enter').classList.add('out');
     stage.hidden = false;
+    if (window.badgeStart) window.badgeStart();
     setTimeout(() => ($('enter').hidden = true), 950);
     if (P.music) { music.src = P.music; music.volume = .4; music.play().catch(() => {}); }
   });

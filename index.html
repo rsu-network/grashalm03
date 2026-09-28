@@ -15,6 +15,7 @@
 <canvas id="fx" aria-hidden="true"></canvas>
 <div class="glow" id="glow"></div>
 <div class="grain"></div>
+<canvas id="rope" aria-hidden="true"></canvas>
 <div class="dot" id="dot"></div>
 
 <!-- Klick zum Betreten -->
@@ -23,23 +24,43 @@
 </button>
 
 <main class="stage" id="stage" hidden>
-  <article class="card" id="card">
-    <div class="avatar">
-      <div class="ring"></div>
-      <img id="avatar" src="avatar.svg" alt="Avatar von Grashalm03" width="132" height="132">
+  <article class="badge" id="badge" aria-label="Profil von Grashalm03">
+    <div class="clip" aria-hidden="true"><i></i></div>
+    <div class="face">
+      <div class="slot" aria-hidden="true"></div>
+
+      <header class="head">
+        <span class="org">GRASHALM<b>03</b></span>
+        <span class="type">ACCESS PASS</span>
+      </header>
+
+      <div class="photo">
+        <img id="avatar" src="avatar.svg" alt="Avatar von Grashalm03" draggable="false">
+        <span class="scan" aria-hidden="true"></span>
+        <i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i>
+      </div>
+
+      <h1 class="name" id="name">Grashalm03</h1>
+      <p class="bio"><span id="bio"></span><span class="caret">|</span></p>
+
+      <ul class="links" id="links"></ul>
+
+      <div class="meta">
+        <span><em>ID</em> 0003</span>
+        <span><em>LEVEL</em> ∞</span>
+        <span><em>VALID</em> 2026</span>
+      </div>
+      <svg class="barcode" id="barcode" viewBox="0 0 200 30" preserveAspectRatio="none" aria-hidden="true"></svg>
+
+      <i class="holo" aria-hidden="true"></i>
     </div>
-
-    <h1 class="name" id="name">Grashalm03</h1>
-    <p class="bio"><span id="bio"></span><span class="caret">|</span></p>
-
-    <ul class="links" id="links"></ul>
-
-    <p class="foot"><span class="live"></span>grashalm03.top</p>
   </article>
+  <p class="hint" id="hint">Zieh am Badge</p>
 </main>
 
 <audio id="music" loop preload="none"></audio>
 <script src="config.js"></script>
 <script src="script.js"></script>
+<script src="badge.js"></script>
 </body>
 </html>
