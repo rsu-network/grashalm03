@@ -3,9 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Grashalm03 · Coming Soon</title>
-<meta name="description" content="Grashalm03 – coming soon.">
+<title>Grashalm03</title>
+<meta name="description" content="Grashalm03 – Profil.">
 <meta name="theme-color" content="#03060c">
+<meta property="og:title" content="Grashalm03">
+<meta property="og:description" content="Profil von Grashalm03">
+<meta property="og:url" content="https://grashalm03.top">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,12 +17,29 @@
 <div class="grain"></div>
 <div class="dot" id="dot"></div>
 
-<main class="stage">
-  <h1 id="title" aria-label="Coming Soon"></h1>
-  <div class="line"><span></span></div>
-  <p class="name">GRASHALM03</p>
+<!-- Klick zum Betreten -->
+<button class="enter" id="enter" type="button">
+  <span class="enter-text">Klick zum Betreten</span>
+</button>
+
+<main class="stage" id="stage" hidden>
+  <article class="card" id="card">
+    <div class="avatar">
+      <div class="ring"></div>
+      <img id="avatar" src="avatar.svg" alt="Avatar von Grashalm03" width="132" height="132">
+    </div>
+
+    <h1 class="name" id="name">Grashalm03</h1>
+    <p class="bio"><span id="bio"></span><span class="caret">|</span></p>
+
+    <ul class="links" id="links"></ul>
+
+    <p class="foot"><span class="live"></span>grashalm03.top</p>
+  </article>
 </main>
 
+<audio id="music" loop preload="none"></audio>
+<script src="config.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
