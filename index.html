@@ -5,29 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Grashalm03</title>
 <meta name="description" content="Grashalm03 – Profil.">
-<meta name="theme-color" content="#040811">
+<meta name="theme-color" content="#7fb9f5">
 <meta property="og:title" content="Grashalm03">
 <meta property="og:description" content="Profil von Grashalm03">
 <meta property="og:url" content="https://grashalm03.top">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="bg" aria-hidden="true">
-  <i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i>
-  <i class="dots"></i>
-  <i class="beam"></i>
-</div>
-<canvas id="fx" aria-hidden="true"></canvas>
-<div class="glow" id="glow"></div>
-<div class="grain"></div>
-<i class="vignette"></i>
+<canvas id="sky" aria-hidden="true"></canvas>
 <canvas id="rope" aria-hidden="true"></canvas>
-<div class="dot" id="dot"></div>
-
-<!-- Klick zum Betreten -->
-<button class="enter" id="enter" type="button">
-  <span class="enter-text">Klick zum Betreten</span>
-</button>
 
 <main class="stage" id="stage" hidden>
   <!-- Ausweis (hängt links) -->
@@ -63,8 +49,7 @@
 
   <!-- Inhalt (rechts) -->
   <section class="panel" id="panel">
-    <p class="eyebrow"><span></span>Profil</p>
-    <h1 class="title" id="name">Grashalm<b>03</b></h1>
+    <h1 class="title" id="name" aria-label="Grashalm03"></h1>
     <p class="bio"><span id="bio"></span><span class="caret">|</span></p>
 
     <ul class="links" id="links"></ul>
@@ -75,8 +60,16 @@
   <p class="hint" id="hint">Zieh am Badge</p>
 </main>
 
+<canvas id="grass" aria-hidden="true"></canvas>
+
+<button class="enter" id="enter" type="button">
+  <span class="enter-text">Klick zum Betreten</span>
+</button>
+<div class="dot" id="dot"></div>
+
 <audio id="music" loop preload="none"></audio>
 <script src="config.js"></script>
+<script src="sky.js"></script>
 <script src="script.js"></script>
 <script src="badge.js"></script>
 </body>

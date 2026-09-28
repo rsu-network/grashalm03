@@ -1,17 +1,27 @@
 (() => {
   const P = window.PROFILE;
   const $ = id => document.getElementById(id);
-  const canvas = $('fx'), ctx = canvas.getContext('2d');
-  const glow = $('glow'), dot = $('dot'), stage = $('stage');
+  const dot = $('dot'), stage = $('stage');
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const M = window.MOUSE;
 
   // ---------- Inhalt aus config.js ----------
   document.title = P.name;
-  const m = P.name.match(/^(.*?)(\d+)$/);
-  const setName = (el, accent) => { el.textContent = ''; el.append(m ? m[1] : P.name);
-    if (m) { const b = document.createElement(accent ? 'b' : 'span'); b.textContent = m[2]; el.append(b); } };
-  setName($('name'), true); setName($('badgeName'), false);
   if (P.role) $('role').textContent = P.role;
+  const m = P.name.match(/^(.*?)(\d+)$/);
+  const setBadgeName = () => { const el = $('badgeName'); el.textContent = ''; el.append(m ? m[1] : P.name);
+    if (m) { const s = document.createElement('span'); s.textContent = m[2]; el.append(s); } };
+  setBadgeName();
+
+  // Titel: jeder Buchstabe ein eigener Halm
+  const title = $('name'); title.setAttribute('aria-label', P.name);
+  const letters = [];
+  [...P.name].forEach((ch, i) => {
+    const w = document.createElement('span'); w.className = 'ch'; w.setAttribute('aria-hidden', 'true'); w.style.setProperty('--i', i);
+    if (m && i >= m[1].length) w.classList.add('acc');
+    const s = document.createElement('span'); s.className = 'sw'; s.textContent = ch; w.appendChild(s); title.appendChild(w);
+    letters.push({ w, s, i });
+  });
 
   const ICONS = {
     discord: 'M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.2.5a18 18 0 0 0-4.4 0L10.6 3a19.8 19.8 0 0 0-4.9 1.4C2.6 9 1.8 13.5 2.2 18a19.9 19.9 0 0 0 6 3l.8-1.3a13 13 0 0 1-2-1l.5-.4a14.2 14.2 0 0 0 12.1 0l.5.4a13 13 0 0 1-2 1l.8 1.3a19.9 19.9 0 0 0 6-3c.5-5.2-.8-9.7-3.6-13.6ZM8.7 15.3c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4Zm6.6 0c-1.2 0-2.1-1.1-2.1-2.4s.9-2.4 2.1-2.4 2.1 1.1 2.1 2.4-.9 2.4-2.1 2.4Z',
@@ -30,7 +40,7 @@
   P.links.forEach((l, i) => {
     const li = document.createElement('li'); li.style.setProperty('--i', i);
     const a = document.createElement('a'); a.href = l.url; a.rel = 'noopener noreferrer';
-    a.title = l.label; a.setAttribute('aria-label', l.label); a.draggable = false;
+    a.title = l.label; a.draggable = false;
     if (l.url !== '#') a.target = '_blank';
     const ic = document.createElement('span'); ic.className = 'ic'; ic.appendChild(svg(ICONS[l.icon] || ICONS.link)); a.appendChild(ic);
     const t = document.createElement('span'); t.className = 'lb'; t.textContent = l.label; a.appendChild(t);
@@ -56,55 +66,43 @@
     })();
   })();
 
-  // ---------- Hintergrund: ruhiger Lichtstaub ----------
-  let W, H, dpr, dust = [];
-  const mouse = { x: .5, y: .5, sx: .5, sy: .5 };
-  const rnd = (a, b) => a + Math.random() * (b - a);
-
-  function resize() {
-    dpr = Math.min(devicePixelRatio || 1, 2);
-    W = canvas.width = innerWidth * dpr; H = canvas.height = innerHeight * dpr;
-    dust = Array.from({ length: Math.min(110, Math.floor(innerWidth * innerHeight / 14000)) }, () => ({
-      x: Math.random() * W, y: Math.random() * H, z: rnd(.3, 1),          // z = Tiefe (Größe, Tempo, Parallax)
-      ph: Math.random() * 6.28, sp: rnd(.4, 1.2),
-    }));
-  }
-  addEventListener('resize', resize); resize();
-
-  let t = 0;
-  function frame() {
-    t += .01;
-    mouse.sx += (mouse.x - mouse.sx) * .04; mouse.sy += (mouse.y - mouse.sy) * .04;
-    ctx.clearRect(0, 0, W, H);
-    for (const p of dust) {
-      p.y -= .12 * p.z * dpr; p.x += Math.sin(t * p.sp + p.ph) * .08 * dpr;
-      if (p.y < -10) { p.y = H + 10; p.x = Math.random() * W; }
-      const px = p.x + (mouse.sx - .5) * -60 * p.z * dpr, py = p.y + (mouse.sy - .5) * -40 * p.z * dpr;
-      const tw = .45 + .55 * Math.sin(t * 2 * p.sp + p.ph), r = (.6 + p.z * 1.5) * dpr;
-      ctx.beginPath(); ctx.arc(px, py, r, 0, 6.283);
-      ctx.fillStyle = `rgba(190,228,255,${(.12 + .38 * p.z) * tw})`;
-      ctx.shadowColor = 'rgba(90,190,255,.9)'; ctx.shadowBlur = 8 * dpr * p.z; ctx.fill();
+  // ---------- Buchstaben biegen sich im Wind wie Halme ----------
+  let tt = 0;
+  function sway() {
+    tt += .016;
+    const active = performance.now() - M.last < 2600;
+    for (const L of letters) {
+      const r = L.w.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height;
+      let rot = Math.sin(tt * 1.5 + L.i * .55) * 1.6, lift = Math.sin(tt * 1.1 + L.i * .8) * 1.5, sc = 1;
+      if (active) {
+        const dx = cx - M.x, dy = cy - M.y, near = Math.exp(-(dx * dx + dy * dy) / (2 * 150 * 150));
+        rot += Math.sign(dx || 1) * Math.min(1, Math.abs(dx) / 50) * near * 15;
+        lift -= near * 10; sc += near * .06;
+      }
+      L.s.style.transform = `translateY(${lift.toFixed(2)}px) rotate(${rot.toFixed(2)}deg) scaleY(${sc.toFixed(3)})`;
     }
-    ctx.shadowBlur = 0;
-    if (!reduce) requestAnimationFrame(frame);
+    if (!reduce) requestAnimationFrame(sway);
   }
-  frame();
 
   // ---------- Maus ----------
   addEventListener('pointermove', e => {
-    mouse.x = e.clientX / innerWidth; mouse.y = e.clientY / innerHeight;
-    dot.style.transform = glow.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    M.x = e.clientX; M.y = e.clientY; M.last = performance.now();
+    dot.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
   });
-  addEventListener('pointerdown', () => dot.classList.add('big'));
+  addEventListener('pointerdown', e => { dot.classList.add('big'); if (window.FX) FX.burst(e.clientX, e.clientY); });
   addEventListener('pointerup', () => dot.classList.remove('big'));
 
-  // ---------- Enter ----------
+  // ---------- Enter: Wolkendecke reißt auf ----------
   const music = $('music');
   $('enter').addEventListener('click', () => {
     $('enter').classList.add('out');
-    stage.hidden = false;
-    if (window.badgeStart) window.badgeStart();
-    setTimeout(() => ($('enter').hidden = true), 950);
+    if (window.FX) FX.start();
+    setTimeout(() => {
+      stage.hidden = false;
+      if (window.badgeStart) window.badgeStart();
+      requestAnimationFrame(sway);
+    }, reduce ? 0 : 1500);
+    setTimeout(() => ($('enter').hidden = true), 900);
     if (P.music) { music.src = P.music; music.volume = .4; music.play().catch(() => {}); }
   });
 })();

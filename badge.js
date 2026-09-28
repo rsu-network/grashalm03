@@ -109,21 +109,53 @@
     // Band zeichnen
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
-    const path = () => {
-      ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
-      for (let i = 1; i < N; i++) {
-        const p = pts[i], q = pts[i + 1];
-        ctx.quadraticCurveTo(p.x, p.y, (p.x + q.x) / 2, (p.y + q.y) / 2);
-      }
-      ctx.lineTo(a.x, a.y);
+    const bandW = Math.max(18, Math.min(28, bw * .09));
+    const poly = samplePath();
+    const stroke = (color, width, blur) => {
+      ctx.beginPath(); ctx.moveTo(poly[0].x, poly[0].y);
+      for (let i = 1; i < poly.length; i++) ctx.lineTo(poly[i].x, poly[i].y);
+      ctx.strokeStyle = color; ctx.lineWidth = width; ctx.lineJoin = 'round'; ctx.lineCap = 'butt';
+      ctx.shadowColor = blur ? 'rgba(6,42,82,.4)' : 'transparent'; ctx.shadowBlur = blur; ctx.shadowOffsetY = blur ? 5 : 0;
+      ctx.stroke(); ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
     };
-    const bandW = Math.max(16, Math.min(26, bw * .085));
-    ctx.lineCap = 'butt'; ctx.lineJoin = 'round';
-    ctx.shadowColor = 'rgba(56,168,255,.55)'; ctx.shadowBlur = 18;
-    path(); ctx.strokeStyle = '#0d3358'; ctx.lineWidth = bandW; ctx.stroke();
-    ctx.shadowBlur = 0;
-    path(); ctx.strokeStyle = 'rgba(159,220,255,.5)'; ctx.lineWidth = bandW; ctx.setLineDash([1.5, 9]); ctx.stroke(); ctx.setLineDash([]);
-    path(); ctx.strokeStyle = 'rgba(217,242,255,.85)'; ctx.lineWidth = 1.5; ctx.stroke();
+    stroke('#052346', bandW, 14);
+    stroke('#0b4a8a', bandW - 4, 0);
+    stroke('rgba(255,255,255,.28)', 1.2, 0);
+
+    // Aufdruck entlang des Bandes (haftet am Seil, rutscht nicht)
+    const fs = Math.round(bandW * .5);
+    ctx.font = `700 ${fs}px "Segoe UI", system-ui, sans-serif`;
+    ctx.fillStyle = 'rgba(255,255,255,.92)'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const cum = [0];
+    for (let i = 1; i < poly.length; i++) cum.push(cum[i - 1] + Math.hypot(poly[i].x - poly[i - 1].x, poly[i].y - poly[i - 1].y));
+    const label = (window.PROFILE?.name || 'Grashalm03').toUpperCase() + '     ';
+    let s = fs * 2, k = 0, idx = 1;
+    while (s < cum[cum.length - 1] - fs) {
+      const ch = label[k++ % label.length], cw = ctx.measureText(ch).width + fs * .18;
+      if (ch !== ' ') {
+        while (idx < cum.length - 1 && cum[idx] < s) idx++;
+        const p0 = poly[idx - 1], p1 = poly[idx], f = (s - cum[idx - 1]) / ((cum[idx] - cum[idx - 1]) || 1);
+        ctx.save(); ctx.translate(p0.x + (p1.x - p0.x) * f, p0.y + (p1.y - p0.y) * f);
+        ctx.rotate(Math.atan2(p1.y - p0.y, p1.x - p0.x)); ctx.fillText(ch, 0, 0); ctx.restore();
+      }
+      s += cw;
+    }
+  }
+
+  // Seil als geglättete Polylinie
+  function samplePath() {
+    const out = [{ x: pts[0].x, y: pts[0].y }];
+    let px = pts[0].x, py = pts[0].y;
+    for (let i = 1; i < N; i++) {
+      const p = pts[i], q = pts[i + 1], ex = (p.x + q.x) / 2, ey = (p.y + q.y) / 2;
+      for (let k = 1; k <= 6; k++) {
+        const u = k / 6, a = (1 - u) * (1 - u), b = 2 * (1 - u) * u, c = u * u;
+        out.push({ x: a * px + b * p.x + c * ex, y: a * py + b * p.y + c * ey });
+      }
+      px = ex; py = ey;
+    }
+    out.push({ x: pts[N].x, y: pts[N].y });
+    return out;
   }
 
   function loop(now) {
