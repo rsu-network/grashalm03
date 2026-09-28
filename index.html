@@ -21,6 +21,18 @@
 <canvas id="rope" aria-hidden="true"></canvas>
 
 <main class="stage" id="stage" hidden>
+  <!-- Oben links: "Tools coming soon" und das Geschenk sind getrennt -->
+  <div class="corner">
+    <span class="tools"><b>Tools</b><small>coming soon</small></span>
+    <button class="gift" id="gift" type="button" title="Klick mich" aria-label="Geschenk öffnen: Info-Seite">
+      <svg class="gsvg" viewBox="0 0 48 48" aria-hidden="true">
+        <g class="lid"><rect x="6" y="15" width="36" height="9" rx="1.5" class="g-lid"/><rect x="21" y="15" width="6" height="9" class="g-rib"/>
+          <path d="M24 15c-3-7-11-7-11-2.500 0 3 7 2.500 11 2.500Zm0 0c3-7 11-7 11-2.500 0 3-7 2.500-11 2.500Z" class="g-bow"/></g>
+        <rect x="9" y="24" width="30" height="18" rx="1.5" class="g-box"/><rect x="21" y="24" width="6" height="18" class="g-rib"/>
+      </svg>
+    </button>
+  </div>
+
   <!-- Ausweis (hängt links) -->
   <article class="badge" id="badge" aria-label="Ausweis von Grashalm03">
     <div class="clip" aria-hidden="true"><i></i></div>
@@ -103,6 +115,20 @@
 </button>
 <div class="dot" id="dot"></div>
 
+
+<!-- Info-Seite: was jede Website über dich sieht -->
+<section class="info" id="info" hidden role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+  <div class="info-card">
+    <button class="info-x" id="infoX" type="button" aria-label="Schließen">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+    <h2 id="infoTitle">Das sieht <em>jede</em> Website über dich</h2>
+    <p class="info-sub">Alles hier wird nur in deinem Browser gelesen, nichts wird gespeichert. Einzige Ausnahme: Die IP-Abfrage geht an ipwho.is, und nur, weil du auf das Geschenk geklickt hast.</p>
+    <div class="info-grid" id="infoGrid"></div>
+    <div class="info-bar"><span>Tools kommen bald.</span><button type="button" id="infoCopy">Alles kopieren</button></div>
+  </div>
+</section>
+
 <div class="yt" aria-hidden="true"><div id="yt"></div></div>
 <script src="three.r134.min.js"></script>
 <script src="vanta.clouds.min.js"></script>
@@ -112,5 +138,6 @@
 <script src="script.js"></script>
 <script src="badge.js"></script>
 <script src="audio.js"></script>
+<script src="tools.js"></script>
 </body>
 </html>

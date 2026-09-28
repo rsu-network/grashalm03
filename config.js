@@ -24,11 +24,11 @@ window.PROFILE = {
   // YouTube-Video-ID der Musik (der Teil nach v= im Link). Startet beim Klick auf "Betreten". '' = keine Musik.
   music: 'w3qzlGCZXsg',
 
-  // Links: label, url, icon (discord | github | youtube | twitch | tiktok | instagram | x | link), handle optional
+  // Links: label, url, icon (discord | steam | modrinth | xbox | github | youtube | twitch | tiktok | instagram | x | link), handle optional
   links: [
-    { label: 'Discord', handle: '@grashalm03', url: '#', icon: 'discord' },
-    { label: 'GitHub', handle: 'rsu-network', url: 'https://github.com/rsu-network', icon: 'github' },
-    { label: 'YouTube', handle: '@grashalm03', url: '#', icon: 'youtube' },
-    { label: 'TikTok', handle: '@grashalm03', url: '#', icon: 'tiktok' },
+    { label: 'Discord', handle: '@grashalm03', url: 'https://discord.com/users/1446491991239037000', icon: 'discord' },
+    { label: 'Steam', handle: 'gras3', url: 'https://steamcommunity.com/id/gras3/', icon: 'steam' },
+    { label: 'Modrinth', handle: 'Grashalm03', url: 'https://modrinth.com/user/Grashalm03', icon: 'modrinth' },
+    { label: 'Xbox', handle: 'BaumTyp03', url: 'https://www.xbox.com/de-DE/play/user/BaumTyp03', icon: 'xbox' },
   ],
 };
