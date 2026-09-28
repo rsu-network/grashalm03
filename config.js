@@ -5,6 +5,21 @@ window.PROFILE = {
   // Discord-Benutzer-ID für den Live-Status (String lassen!). Voraussetzung: dem Lanyard-Server beitreten (discord.gg/lanyard).
   discordId: '1446491991239037000',
 
+  // QR-Code auf der Rückseite: wohin er beim Scannen führt
+  qr: 'https://www.youtube.com/watch?v=XfELJU1mRMg',
+
+  // Feld "Gender" auf der Rückseite
+  gender: 'E-Mail',
+
+  // Abzeichen (icon: verified | coder | gamer | creator | star)
+  badges: [
+    { label: 'Verifiziert', icon: 'verified' },
+    { label: 'Coder', icon: 'coder' },
+    { label: 'Gamer', icon: 'gamer' },
+    { label: 'Creator', icon: 'creator' },
+    { label: 'Early Supporter', icon: 'star' },
+  ],
+
   // Kurzrolle auf dem Ausweis
   role: 'Coder & Gamer',
 

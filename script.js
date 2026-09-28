@@ -95,8 +95,37 @@
 
   // ---------- Rückseite: Über mich ----------
   (function () {
-    const ul = $('bkBio'); const lines = [...new Set([P.role, ...P.bio].filter(Boolean))];
+    const ul = $('bkBio'); const seen = new Set(), lines = [P.role, ...P.bio].filter(t => { const k = t && t.toLowerCase().replace(/[.!\s]+$/, ''); if (!k || seen.has(k)) return false; seen.add(k); return true; });
     lines.forEach(t => { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); });
+  })();
+
+
+  // ---------- QR-Code, Gender, Abzeichen ----------
+  (function () {
+    if (P.qr && window.qrcode) {
+      const q = qrcode(0, 'M'); q.addData(P.qr); q.make();
+      const n = q.getModuleCount(), pad = 2; let d = '';
+      for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) d += 'M' + (c + pad) + ' ' + (r + pad) + 'h1v1h-1z';
+      $('qr').innerHTML = '<svg viewBox="0 0 ' + (n + pad * 2) + ' ' + (n + pad * 2) + '" shape-rendering="crispEdges" aria-hidden="true"><rect width="100%" height="100%" fill="#fff"/><path d="' + d + '" fill="#062a52"/></svg>';
+    } else $('qr').closest('.qrbox').hidden = true;
+    $('gender').textContent = P.gender || '';
+    if (!P.gender) $('gender').closest('dl').hidden = true;
+
+    const BI = {
+      verified: 'M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3ZM9 12l2 2 4-4',
+      coder: 'M8 8l-4 4 4 4M16 8l4 4-4 4M13.5 6l-3 12',
+      gamer: 'M7 9h10a4 4 0 0 1 4 4v1a3 3 0 0 1-5.2 2L14.5 14.5h-5L8.2 16A3 3 0 0 1 3 14v-1a4 4 0 0 1 4-4ZM8 11.5v3M6.5 13h3M15.5 12.5h.01M17.5 14h.01',
+      creator: 'M4 6h16v12H4ZM10 9.5v5l4.5-2.5Z',
+      star: 'M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8 6.8 19.5l1-5.8-4.2-4.1 5.8-.8Z',
+    };
+    ['badgesPanel', 'badgesBack'].forEach(id => {
+      const box = $(id);
+      (P.badges || []).forEach(b => {
+        const s = document.createElement('span'); s.className = 'bdg'; s.dataset.tip = b.label; s.setAttribute('role', 'img'); s.setAttribute('aria-label', b.label);
+        const v = document.createElementNS(NS, 'svg'); v.setAttribute('viewBox', '0 0 24 24'); v.setAttribute('aria-hidden', 'true');
+        const p = document.createElementNS(NS, 'path'); p.setAttribute('d', BI[b.icon] || BI.star); v.appendChild(p); s.appendChild(v); box.appendChild(s);
+      });
+    });
   })();
 
   // ---------- Discord-Status (Lanyard) ----------
